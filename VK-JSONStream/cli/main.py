@@ -9,7 +9,7 @@ def cli():
 
 
 cli.add_command(generate_models, name='gen-models')
-cli.add_command(generate_controllers)
+cli.add_command(generate_controllers, name='gen-controllers')
 
 if __name__ == "__main__":
     cli()
