@@ -18,7 +18,7 @@ def generate_models(schema_file, out_dir):
                 schema = json.load(f)
 
             model_name = schema.get("title", "GeneratedModel")
-            fields = create_pydantic_model(model_name, schema)
+            fields = create_pydantic_model_field(model_name, schema)
             model_code = generate_model_code(model_name, fields)
 
             os.makedirs(out_dir, exist_ok=True)
@@ -75,10 +75,10 @@ def generate_model_code(name: str, fields: Dict[str, Any]) -> str:
     fields_code = []
     for field_name, (field_type, field_args, field_default) in fields.items():
         field_def = f"    {field_name}: {field_type.__name__}"
-        if field_default is None:
-            field_def += " = Field(..."
-        else:
-            field_def += f" = Field(..., default={field_default}"
+        #if field_default is None:
+        field_def += " = Field(..."
+        #else:
+            #field_def += f" = Field(default={field_default}"
 
         # Add additional field arguments
         for key, value in field_args.items():
@@ -89,7 +89,7 @@ def generate_model_code(name: str, fields: Dict[str, Any]) -> str:
 
     model_code = f"""from pydantic import BaseModel, Field
 
-class {name}(BaseModel):
+class {name}(BaseModel): 
 """ + "".join(fields_code)
 
     return model_code
@@ -101,3 +101,5 @@ def create_pydantic_model(name: str, fields: Dict[str, Any]) -> Type[BaseModel]:
 
 # if __name__ == "__main__":
 #     generate_models()
+
+# python cli/main.py gen-models --schema-file=engine-schema.json --out-dir=rest/models/engine
