@@ -1,9 +1,17 @@
 from fastapi import FastAPI
-from rest.routes.engine.application_controller import router
+from src.app.routers import router as api_router
+from src.app.db.database import engine, Base
+from src.app.db.model import Application
 
 app = FastAPI()
 
-app.include_router(router)
+Base.metadata.create_all(bind=engine)
+app.include_router(api_router)
+
+
+@app.get("/")
+async def root():
+    return {"message": "Welcome to the FastAPI application"}
 
 if __name__ == "__main__":
     import uvicorn
